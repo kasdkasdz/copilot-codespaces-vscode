@@ -1,0 +1,145 @@
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local player = game.Players.LocalPlayer
+
+local function setupCharacter(character)
+    local humanoid = character:WaitForChild("Humanoid")
+    local speedEnabled = false
+    local noclipEnabled = false
+    local normalSpeed = 19
+    local highSpeed = 25
+    local hitboxSize = 1
+
+    -- Functions
+    local function activateSpeed()
+        speedEnabled = true
+        humanoid.WalkSpeed = highSpeed
+    end
+
+    local function deactivateSpeed()
+        speedEnabled = false
+        humanoid.WalkSpeed = normalSpeed
+    end
+
+    local function activateNoclip()
+        noclipEnabled = true
+    end
+
+    local function deactivateNoclip()
+        noclipEnabled = false
+    end
+
+    local function setHitboxSize(size)
+        hitboxSize = size
+        local rootPart = character:FindFirstChild("HumanoidRootPart")
+        if rootPart then
+            rootPart.Size = Vector3.new(hitboxSize, 2, hitboxSize)
+            rootPart.Transparency = 0.5
+            rootPart.Anchored = false
+        end
+    end
+
+    local Window = Rayfield:CreateWindow({
+       Name = "WishPurple",
+       Icon = 0,
+       LoadingTitle = "Wish Purple Scripts",
+       LoadingSubtitle = "by Leo.whiz",
+       Theme = "Amethyst",
+       ConfigurationSaving = {
+          Enabled = true,
+          FolderName = nil,
+          FileName = "Big Hub"
+       },
+       Discord = {
+          Enabled = true,
+          Invite = "RwwBPRSjY6",
+          RememberJoins = true
+       },
+       KeySystem = true,
+       KeySettings = {
+          Title = "Key",
+          Subtitle = "Premium WishPurple",
+          Note = "1 key for person",
+          FileName = "Key",
+          SaveKey = true,
+          GrabKeyFromSite = false,
+          Key = {"HappyBuyHunterGay"}
+       }
+    })
+
+    local Tab = Window:CreateTab("🥋Karate")
+
+    local ToggleSpeed = Tab:CreateToggle({
+       Name = "Speed",
+       CurrentValue = false,
+       Flag = "Toggle1",
+       Callback = function(Value)
+           if Value then
+               activateSpeed()
+           else
+               deactivateSpeed()
+           end
+       end,
+    })
+
+    local ToggleNoclip = Tab:CreateToggle({
+       Name = "Noclip",
+       CurrentValue = false,
+       Flag = "Toggle2",
+       Callback = function(Value)
+           if Value then
+               activateNoclip()
+           else
+               deactivateNoclip()
+           end
+       end,
+    })
+
+    local SliderHitbox = Tab:CreateSlider({
+       Name = "Hitbox Size",
+       Range = {1, 50},
+       Increment = 1,
+       Suffix = "Size",
+       CurrentValue = 1,
+       Flag = "HitboxSlider",
+       Callback = function(Value)
+           setHitboxSize(Value)
+       end,
+    })
+
+    local TransparencyToggle = Tab:CreateToggle({
+        Name = "Toggle Transparency",
+        CurrentValue = false,
+        Flag = "TransparencyToggle",
+        Callback = function(Value)
+            local rootPart = character:FindFirstChild("HumanoidRootPart")
+            if rootPart then
+                rootPart.Transparency = Value and 1 or 0.5
+            end
+        end
+    })
+
+    -- Loop to maintain speed and noclip
+    RunService.Heartbeat:Connect(function()
+        if speedEnabled then
+            humanoid.WalkSpeed = highSpeed
+        end
+        if noclipEnabled then
+            local rootPart = character:FindFirstChild("HumanoidRootPart")
+            if rootPart then
+                rootPart.CanCollide = false
+            end
+        else
+            local rootPart = character:FindFirstChild("HumanoidRootPart")
+            if rootPart then
+                rootPart.CanCollide = true
+            end
+        end
+    end)
+end
+
+player.CharacterAdded:Connect(setupCharacter)
+
+if player.Character then
+    setupCharacter(player.Character)
+end
